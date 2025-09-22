@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Calculator</title>
+    <meta name="description" content="A beautiful calculator with scientific functions and unit converter">
+    <meta name="theme-color" content="#8B5CF6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Calculator">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#7c3aed">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Calculator">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="icons/favicon.ico">
+    <link rel="apple-touch-icon" href="icons/favicon.ico">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Enhanced Wavy SVG Background -->
+    <div style="position:fixed;z-index:0;top:0;left:0;width:100vw;height:100vh;overflow:hidden;pointer-events:none;">
+        <svg width="100%" height="100%" viewBox="0 0 8000 4000" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:0;left:0;">
+            <path d="M0 0 Q2000 800 4000 0 T8000 0 V4000 H0 Z" fill="url(#wave1)" opacity="0.22"/>
+            <path d="M0 800 Q2000 1600 4000 800 T8000 800 V4000 H0 Z" fill="url(#wave2)" opacity="0.18"/>
+            <path d="M0 1600 Q2666 2400 5333 1600 T8000 1600 V4000 H0 Z" fill="url(#wave3)" opacity="0.15"/>
+            <path d="M0 3200 Q2000 4000 4000 3200 T8000 3200 V4000 H0 Z" fill="url(#wave4)" opacity="0.13"/>
+            <defs>
+                <linearGradient id="wave1" x1="0" y1="0" x2="8000" y2="4000" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#a78bfa"/>
+                    <stop offset="1" stop-color="#8B5CF6"/>
+                </linearGradient>
+                <linearGradient id="wave2" x1="0" y1="800" x2="8000" y2="4000" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#7c3aed"/>
+                    <stop offset="1" stop-color="#c3cfe2"/>
+                </linearGradient>
+                <linearGradient id="wave3" x1="0" y1="1600" x2="8000" y2="4000" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#bba6e6"/>
+                    <stop offset="1" stop-color="#aab8f7"/>
+                </linearGradient>
+                <linearGradient id="wave4" x1="0" y1="3200" x2="8000" y2="4000" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#c3cfe2"/>
+                    <stop offset="1" stop-color="#ede9fe"/>
+                </linearGradient>
+            </defs>
+        </svg>
+    </div>
+
+    <!-- PWA Install Button -->
+    <button id="install-btn" style="display:none;position:fixed;top:20px;right:20px;z-index:1000;background:linear-gradient(145deg, #10b981, #059669);border:1px solid #34d399;cursor:pointer;padding:10px 20px;border-radius:20px;box-shadow:0 4px 15px rgba(16,185,129,0.15);font-size:16px;color:#fff;font-weight:500;">
+        📱 Install App
+    </button>
+
+    <button id="history-btn" title="View History" onclick="toggleHistory()" style="position:fixed;top:20px;left:20px;z-index:1000;background:linear-gradient(145deg, #8B5CF6, #7c3aed);border:1px solid #a78bfa;cursor:pointer;padding:10px 22px;border-radius:20px;box-shadow:0 4px 15px rgba(139,92,246,0.15);font-size:16px;display:flex;align-items:center;gap:8px;color:#fff;">
+        <!-- YouTube-style view history icon -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;">
+          <circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2" fill="none"/>
+          <path d="M12 7v5l4 2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        History
+    </button>
+
+    <!-- Meter Conversion Panel -->
+    <div id="unit-converter-panel" style="position:fixed;top:90px;left:20px;z-index:999;background:linear-gradient(145deg, #8B5CF6, #7c3aed);border:1px solid #a78bfa;border-radius:18px;box-shadow:0 4px 18px 0 rgba(139,92,246,0.18);padding:18px 18px 14px 18px;min-width:210px;max-width:240px;margin-bottom:18px;display:flex;flex-direction:column;align-items:center;gap:10px;">
+        <div style="font-size:1.1em;font-weight:600;color:#fff;margin-bottom:8px;letter-spacing:0.5px;">Meter Converter</div>
+        <input id="meter-input" type="number" min="0" step="any" placeholder="Enter value" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid #d1d5fa;font-size:1em;margin-bottom:6px;outline:none;" onkeydown="event.stopPropagation();" oninput="event.stopPropagation();" />
+        <select id="meter-from" style="width:100%;padding:6px 8px;border-radius:8px;border:1px solid #d1d5fa;font-size:1em;margin-bottom:6px;">
+            <option value="m">Meters (m)</option>
+            <option value="cm">Centimeters (cm)</option>
+            <option value="mm">Millimeters (mm)</option>
+            <option value="km">Kilometers (km)</option>
+        </select>
+        <span style="color:#fff;font-size:1.1em;">to</span>
+        <select id="meter-to" style="width:100%;padding:6px 8px;border-radius:8px;border:1px solid #d1d5fa;font-size:1em;margin-bottom:6px;">
+            <option value="m">Meters (m)</option>
+            <option value="cm">Centimeters (cm)</option>
+            <option value="mm">Millimeters (mm)</option>
+            <option value="km">Kilometers (km)</option>
+        </select>
+        <button onclick="convertMeter()" style="width:100%;padding:7px 0;border-radius:8px;background:linear-gradient(135deg, #aab8f7 0%, #bba6e6 100%);border:1px solid #d1d5fa;font-size:1em;color:#222;cursor:pointer;margin-bottom:6px;">Convert</button>
+        <div id="meter-result" style="color:#fff;font-size:1.08em;font-weight:500;min-height:22px;"></div>
+    </div>
+
+    <div class="container" style="position:relative;">
+        <div class="Calculator" style="position:relative; z-index:2;">
+            <input type="text" placeholder="0" id="placeholder" class="digital-font" />
+            <button onclick="clr()">AC</button>
+            <button onclick="dlt()">DEL</button>
+            <button onclick="square()">x²</button>
+            <button onclick="display('/')">÷</button>
+            <button onclick="display('7')" class="digital-font">7</button>
+            <button onclick="display('8')" class="digital-font">8</button>
+            <button onclick="display('9')" class="digital-font">9</button>
+            <button onclick="display('*')">x</button>
+            <button onclick="display('4')" class="digital-font">4</button>
+            <button onclick="display('5')" class="digital-font">5</button>
+            <button onclick="display('6')" class="digital-font">6</button>
+            <button onclick="display('+')">+</button>
+            <button onclick="display('1')" class="digital-font">1</button>
+            <button onclick="display('2')" class="digital-font">2</button>
+            <button onclick="display('3')" class="digital-font">3</button>
+            <button onclick="display('-')">-</button>
+            <button onclick="display('.')" class="digital-font">.</button>
+            <button onclick="display('0')" class="digital-font">0</button>
+            <button onclick="calculate()" class="value digital-font">=</button>
+
+            <!-- Side arrow button to toggle scientific panel -->
+            <button id="sci-toggle-btn" onclick="toggleSciPanel()" style="position:absolute;top:50%;right:-28px;transform:translateY(-50%);background:rgba(255,255,255,0.15);border:none;border-radius:20px;width:40px;height:70px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;transition:none;color:#fff;box-shadow:0 4px 15px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.2);">
+                <span id="sci-arrow" style="font-size:28px;">&#9654;</span>
+            </button>
+        </div>
+
+        <div id="sci-panel" class="sci-panel">
+            <div class="sci-btn-grid">
+                <button onclick="sciFunc('sin')">sin</button>
+                <button onclick="sciFunc('cos')">cos</button>
+                <button onclick="sciFunc('tan')">tan</button>
+                <button onclick="sciFunc('log')">log</button>
+                <button onclick="sciFunc('ln')">ln</button>
+                <button onclick="sciFunc('sqrt')">√</button>
+                <button onclick="sciFunc('exp')">eˣ</button>
+                <button onclick="sciFunc('pow10')" class="digital-font">10ˣ</button>
+                <button onclick="sciFunc('pi')">π</button>
+                <button onclick="sciFunc('fact')">n!</button>
+                <button onclick="sciFunc('open')">(</button>
+                <button onclick="sciFunc('close')">)</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="history-panel" style="display:none; position:fixed; top:60px; left:20px; background:linear-gradient(145deg, #8B5CF6, #7c3aed); border:1px solid #d1d5fa; padding:10px; border-radius:20px; max-height:220px; overflow-y:auto; min-width:220px; z-index:1001; box-shadow:0 2px 12px rgba(0,0,0,0.12);">
+        <ul id="history-list" style="list-style:none; padding-left:0; margin:8px 0 0 0;"></ul>
+        <button onclick="clearHistory()" style="display:block; margin:16px auto 0 auto; font-size:15px; padding:8px 20px; background:linear-gradient(135deg, #aab8f7 0%, #bba6e6 100%); border:1px solid #d1d5fa; border-radius:8px; cursor:pointer; color:#222;">Clear history</button>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service_worker.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                        // Update check removed: No update available toast will be shown
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        // PWA Install Button
+        let deferredPrompt;
+        const installBtn = document.getElementById('install-btn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+                installBtn.style.display = 'none';
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA was installed');
+            installBtn.style.display = 'none';
+        });
+
+
+        document.getElementById('update-btn').addEventListener('click', () => {
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+            }
+            window.location.reload();
+        });
+
+        document.getElementById('dismiss-update').addEventListener('click', () => {
+            document.getElementById('update-toast').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
